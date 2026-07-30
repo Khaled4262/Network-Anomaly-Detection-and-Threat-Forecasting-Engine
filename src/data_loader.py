@@ -16,29 +16,32 @@ COLUMNS = [
     "dst_host_rerror_rate", "dst_host_srv_rerror_rate", "target", "difficulty_level"
 ]
 
-def load_and_profile_dataset(file_path: str, dataset_name: str) -> pd.DataFrame:
-    """Loads NSL-KDD text data, applies columns, and profiles the target labels."""
+#Loads NSL-KDD text data, and applies columns.
+def load_dataset(file_path:str) -> pd.DataFrame:
     if not os.path.exists(file_path):
-        raise FileNotFoundError(f"Dataset missing at {file_path}. Please download it into the data/ directory.")
-        
-    print(f"\n{'='*20} PROFILING {dataset_name.upper()} {'='*20}")
-    
+            raise FileNotFoundError(f"Dataset missing at {file_path}. Please download it into the data/ directory.")
     # Read CSV (NSL-KDD files are comma-delimited without headers)
     df = pd.read_csv(file_path, names=COLUMNS, header=None)
+    return df
     
-    print(f"Shape: {df.shape[0]} rows, {df.shape[1]} columns")
+
+#Profiles the target labels.
+def profile_dataset(df:pd.DataFrame,dataset_name:str) -> None:
+    df_copy = df.copy()     
+    print(f"\n{'='*20} PROFILING {dataset_name.upper()} {'='*20}")
+    print(f"Shape: {df_copy.shape[0]} rows, {df_copy.shape[1]} columns")
     
     # Binary Label Profiling
-    df['is_attack'] = np.where(df['target'] == 'normal', 'normal', 'attack')
-    binary_counts = df['is_attack'].value_counts()
-    binary_pct = df['is_attack'].value_counts(normalize=True) * 100
+    df_copy['is_attack'] = np.where(df_copy['target'] == 'normal', 'normal', 'attack')
+    binary_counts = df_copy['is_attack'].value_counts()
+    binary_pct = df_copy['is_attack'].value_counts(normalize=True) * 100
     
     print("\n--- Binary Target Distribution (Normal vs. Threat) ---")
     for idx in binary_counts.index:
         print(f"Class '{idx}': {binary_counts[idx]} instances ({binary_pct[idx]:.2f}%)")
         
     # Granular Attack Type Profiling
-    attack_counts = df[df['is_attack'] == 'attack']['target'].value_counts()
+    attack_counts = df_copy[df_copy['is_attack'] == 'attack']['target'].value_counts()
     print("\n--- Granular Attack Type Breakdown ---")
     if len(attack_counts) == 0:
         print("No attacks found.")
@@ -46,11 +49,21 @@ def load_and_profile_dataset(file_path: str, dataset_name: str) -> pd.DataFrame:
         for idx in attack_counts.index:
             print(f" - {idx}: {attack_counts[idx]}")
             
-    # Audit for missing fields
-    missing_values = df.isnull().sum().sum()
+    # Check for missing fields
+    missing_values = df_copy.isnull().sum().sum()
     print(f"\nMissing values detected: {missing_values}")
+
+#Creates a binary numeric target column and drops metadata.
+def prepare_targets(df:pd.DataFrame) -> pd.DataFrame:
+    processed_df = df.copy()
     
-    return df
+    # Map text target to binary: 0 for normal, 1 for attack
+    processed_df['label'] = np.where(processed_df['target'] == 'normal', 0, 1)
+    
+    #Drop columns that shouldn't go into our machine learning model
+    processed_df = processed_df.drop(columns=['target', 'difficulty_level'])
+    return processed_df
+    
 
 if __name__ == "__main__":
     # Define paths relative to repo root
@@ -58,7 +71,17 @@ if __name__ == "__main__":
     test_path = os.path.join("data", "KDDTest+.txt")
     
     try:
-        train_df = load_and_profile_dataset(train_path, "Train Dataset (KDDTrain+)")
-        test_df = load_and_profile_dataset(test_path, "Test Dataset (KDDTest+)")
+        #Load raw data from disk.
+        train_df = load_dataset(train_path)
+        test_df = load_dataset(test_path)
+        
+        #Run diagnostic report
+        profile_dataset(train_df, "Train Dataset (KDDTrain+)")
+        profile_dataset(test_df, "Test Dataset (KDDTest+)")
+        
+        #Transform targets for the machine learning module
+        train_df_prepped = prepare_targets(train_df)
+        test_df_prepped = prepare_targets(test_df)
+        
     except Exception as e:
         print(f"\n[ERROR] {str(e)}")
