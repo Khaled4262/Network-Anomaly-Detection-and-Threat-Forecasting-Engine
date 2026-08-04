@@ -16,8 +16,8 @@ COLUMNS = [
     "dst_host_rerror_rate", "dst_host_srv_rerror_rate", "target", "difficulty_level"
 ]
 
-#Loads NSL-KDD text data, and applies columns.
 def load_dataset(file_path:str) -> pd.DataFrame:
+    """Loads NSL-KDD text data and applies column names."""
     if not os.path.exists(file_path):
             raise FileNotFoundError(f"Dataset missing at {file_path}. Please download it into the data/ directory.")
     # Read CSV (NSL-KDD files are comma-delimited without headers)
@@ -25,8 +25,8 @@ def load_dataset(file_path:str) -> pd.DataFrame:
     return df
     
 
-#Profiles the target labels.
 def profile_dataset(df:pd.DataFrame,dataset_name:str) -> None:
+    """Profiles the target labels."""
     df_copy = df.copy()     
     print(f"\n{'='*20} PROFILING {dataset_name.upper()} {'='*20}")
     print(f"Shape: {df_copy.shape[0]} rows, {df_copy.shape[1]} columns")
@@ -53,8 +53,8 @@ def profile_dataset(df:pd.DataFrame,dataset_name:str) -> None:
     missing_values = df_copy.isnull().sum().sum()
     print(f"\nMissing values detected: {missing_values}")
 
-#Creates a binary numeric target column and drops metadata.
 def prepare_targets(df:pd.DataFrame) -> pd.DataFrame:
+    """Creates a binary numeric target column and drops metadata."""
     processed_df = df.copy()
     
     # Map text target to binary: 0 for normal, 1 for attack
@@ -82,6 +82,6 @@ if __name__ == "__main__":
         #Transform targets for the machine learning module
         train_df_prepped = prepare_targets(train_df)
         test_df_prepped = prepare_targets(test_df)
-        
+    
     except Exception as e:
         print(f"\n[ERROR] {str(e)}")
