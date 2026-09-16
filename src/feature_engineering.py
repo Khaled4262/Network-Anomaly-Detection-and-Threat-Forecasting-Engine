@@ -18,17 +18,13 @@ def fit_encoder(train_df: pd.DataFrame, columns: list = CATEGORICAL_COLUMNS) -> 
 
 
 def apply_encoding(df: pd.DataFrame, encoder: OneHotEncoder, columns: list = CATEGORICAL_COLUMNS) -> pd.DataFrame:
-    """
-    Transforms the given categorical columns using an already-fitted encoder
-    and returns a new DataFrame with the originals dropped and the one-hot
-    columns appended.
-    """
+    """Transforms categorical columns using a fitted encoder, 
+    drops originals, and appends one-hot columns in a new DataFrame."""
     encoded_array = encoder.transform(df[columns])
     encoded_df = pd.DataFrame(
-        encoded_array,
-        columns=encoder.get_feature_names_out(columns),
-        index=df.index,
-    )
+    encoded_array,
+    columns=encoder.get_feature_names_out(columns),
+    index=df.index,)
 
     remaining_df = df.drop(columns=columns).reset_index(drop=True)
     encoded_df = encoded_df.reset_index(drop=True)
@@ -37,11 +33,8 @@ def apply_encoding(df: pd.DataFrame, encoder: OneHotEncoder, columns: list = CAT
 
 
 def encode_categoricals(train_df: pd.DataFrame, test_df: pd.DataFrame, columns: list = CATEGORICAL_COLUMNS):
-    """
-    Fits the encoder on train_df and applies it to both train_df and test_df,
-    guaranteeing both outputs end up with identical columns in identical order
-    (a requirement for feeding both into the same model).
-    """
+    """Fits encoder on train data and transforms both train and test sets, 
+    ensuring identical column order for model compatibility."""
     encoder = fit_encoder(train_df, columns)
     train_encoded = apply_encoding(train_df, encoder, columns)
     test_encoded = apply_encoding(test_df, encoder, columns)
