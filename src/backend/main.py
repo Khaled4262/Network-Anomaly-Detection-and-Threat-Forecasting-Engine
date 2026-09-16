@@ -1,27 +1,17 @@
 import os
-import sys
 from contextlib import asynccontextmanager
-
-# Make sibling src/ modules (data_loader, feature_engineering) and this
-# folder's schemas.py importable as flat modules, the same style the rest of
-# the repo uses -- regardless of whether uvicorn is launched from the repo
-# root, from src/, or from src/api/.
-_API_DIR = os.path.dirname(os.path.abspath(__file__))
-_SRC_DIR = os.path.abspath(os.path.join(_API_DIR, ".."))
-sys.path.insert(0, _API_DIR)
-sys.path.insert(0, _SRC_DIR)
 
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from feature_engineering import apply_encoding, CATEGORICAL_COLUMNS
-from schemas import NetworkLogRecord, PredictionResponse
+from src.backend.schemas import NetworkLogRecord, PredictionResponse
+from src.ml.feature_engineering import apply_encoding, CATEGORICAL_COLUMNS
 
 # Paths are relative to wherever the process is launched from -- same
-# convention data_loader.py / feature_engineering.py / train.py use for
-# "data/...". Run uvicorn from the repo root: uvicorn src.api.main:app
+# convention the src/ml scripts use for "data/...". Run uvicorn from the
+# repo root: uvicorn src.backend.main:app
 MODEL_PATH = os.path.join("models", "rf_baseline.joblib")
 ENCODER_PATH = os.path.join("models", "onehot_encoder.joblib")
 
@@ -50,7 +40,7 @@ def load_artifacts() -> None:
     except FileNotFoundError as e:
         raise RuntimeError(
             f"Could not load model/encoder artifacts ({e}). "
-            "Run `python src/train.py` first to generate "
+            "Run `python -m src.ml.train` first to generate "
             "models/rf_baseline.joblib and models/onehot_encoder.joblib."
         )
 
@@ -108,8 +98,11 @@ def predict(record: NetworkLogRecord):
             encoded_df[col] = 0
     encoded_df = encoded_df[model_columns]
 
-    prediction = int(model.predict(encoded_df)[0])
-    probability_attack = float(model.predict_proba(encoded_df)[0][1])
+    # One forest pass: RandomForest.predict() is just argmax over
+    # predict_proba(), so derive the label from the probabilities.
+    probabilities = model.predict_proba(encoded_df)[0]
+    prediction = int(model.classes_[probabilities.argmax()])
+    probability_attack = float(probabilities[list(model.classes_).index(1)])
 
     return PredictionResponse(
         classification="attack" if prediction == 1 else "normal",

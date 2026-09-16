@@ -1,9 +1,8 @@
 import os
-import joblib
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
-from data_loader import load_dataset, prepare_targets
+from src.ml.data_loader import load_dataset, prepare_targets
 
 # The three categorical (non-numeric) columns in NSL-KDD
 CATEGORICAL_COLUMNS = ["protocol_type", "service", "flag"]
@@ -65,12 +64,7 @@ if __name__ == "__main__":
         assert list(train_encoded.columns) == list(test_encoded.columns), \
             "Column mismatch between train and test after encoding!"
         print("Column alignment check passed: train and test have identical schemas.")
-
-        # Persist the fitted encoder so the same transformation can be reused
-        # later by the FastAPI service (Week 2) on live/incoming traffic.
-        os.makedirs("models", exist_ok=True)
-        joblib.dump(encoder, os.path.join("models", "onehot_encoder.joblib"))
-        print("Saved fitted encoder to models/onehot_encoder.joblib")
+        # The fitted encoder is persisted by train.py alongside the model.
 
     except Exception as e:
         print(f"\n[ERROR] {str(e)}")

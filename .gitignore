@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Environments
+# Python environments
 .venv/
 venv/
 ENV/
@@ -14,18 +14,31 @@ env/
 data/
 *.csv
 *.txt
+!requirements.txt
 *.parquet
 *.gz
 *.zip
 
-# IDEs and editors
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Notebooks and outputs
-.ipynb_checkpoints/
+# Model artifacts / notebook / log output
 models/
 outputs/
 logs/
+*.log
+.ipynb_checkpoints/
+
+# Frontend (Node/Vite)
+node_modules
+dist
+dist-ssr
+*.local
+
+# IDEs and editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from data_loader import load_dataset
+from src.ml.data_loader import load_dataset
 
 
 def row_to_payload(row: pd.Series, feature_cols: list) -> dict:
@@ -77,7 +77,7 @@ def main() -> None:
     if sent:
         print(f"\n{correct}/{sent} predictions matched the actual label")
     else:
-        print("\nNo requests succeeded -- is the API running? (uvicorn src.api.main:app)")
+        print("\nNo requests succeeded -- is the API running? (uvicorn src.backend.main:app)")
 
 
 if __name__ == "__main__":

@@ -78,10 +78,6 @@ if __name__ == "__main__":
         #Run diagnostic report
         profile_dataset(train_df, "Train Dataset (KDDTrain+)")
         profile_dataset(test_df, "Test Dataset (KDDTest+)")
-        
-        #Transform targets for the machine learning module
-        train_df_prepped = prepare_targets(train_df)
-        test_df_prepped = prepare_targets(test_df)
-    
+
     except Exception as e:
         print(f"\n[ERROR] {str(e)}")

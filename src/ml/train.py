@@ -4,8 +4,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
-from data_loader import load_dataset, prepare_targets
-from feature_engineering import encode_categoricals
+from src.ml.data_loader import load_dataset, prepare_targets
+from src.ml.feature_engineering import encode_categoricals
 
 
 def split_features_and_target(df: pd.DataFrame, target_col: str = "label"):
