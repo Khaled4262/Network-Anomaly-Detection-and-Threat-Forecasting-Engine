@@ -77,7 +77,7 @@ def main() -> None:
     if sent:
         print(f"\n{correct}/{sent} predictions matched the actual label")
     else:
-        print("\nNo requests succeeded -- is the API running? (uvicorn src.backend.main:app)")
+        print("\nNo requests succeeded -- is the API running? (python -m uvicorn src.backend.main:app)")
 
 
 if __name__ == "__main__":

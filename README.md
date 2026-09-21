@@ -43,7 +43,7 @@ Run all Python commands from the repo root:
 python -m src.ml.data_loader            # load + profile the raw dataset
 python -m src.ml.feature_engineering    # encode categorical features (sanity check)
 python -m src.ml.train                  # train, evaluate, save model + encoder to models/
-uvicorn src.backend.main:app            # start the inference API on http://127.0.0.1:8000
+python -m uvicorn src.backend.main:app  # start the inference API on http://127.0.0.1:8000
 python -m src.backend.simulate_stream   # stream test-set records to the running API
 ```
 

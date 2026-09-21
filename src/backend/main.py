@@ -11,7 +11,7 @@ from src.ml.feature_engineering import apply_encoding, CATEGORICAL_COLUMNS
 
 # Paths are relative to wherever the process is launched from -- same
 # convention the src/ml scripts use for "data/...". Run uvicorn from the
-# repo root: uvicorn src.backend.main:app
+# repo root: python -m uvicorn src.backend.main:app
 MODEL_PATH = os.path.join("models", "rf_baseline.joblib")
 ENCODER_PATH = os.path.join("models", "onehot_encoder.joblib")
 

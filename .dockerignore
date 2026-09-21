@@ -1,0 +1,10 @@
+.git
+.gitignore
+README.md
+data/
+**/__pycache__/
+*.pyc
+src/frontend/node_modules
+src/frontend/dist
+.env
+.env.local

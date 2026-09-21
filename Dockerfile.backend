@@ -1,0 +1,28 @@
+# Build context is the repo root (needs src/ AND a pre-trained models/).
+# Train locally first: `python -m src.ml.train` (models/ is gitignored,
+# so it only exists on your machine until you build this image).
+#
+# Build:  docker build -f Dockerfile.backend -t nadtfe-backend .
+# Run:    docker run -p 8000:8000 nadtfe-backend
+
+FROM python:3.11-slim AS runtime
+
+WORKDIR /app
+
+# build-essential covers native-extension wheels (numpy/scikit-learn) on
+# slim base images that don't ship prebuilt wheels for every platform.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src/ ./src/
+# Pre-trained artifacts baked into the image -- see the note in DEPLOYMENT.md
+# about why training doesn't happen inside the Docker build.
+COPY models/ ./models/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "src.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

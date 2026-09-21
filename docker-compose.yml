@@ -1,0 +1,27 @@
+# docker-compose.yml — place at the repo root
+#
+# Local use:      docker compose up --build
+# EC2 use:        set VITE_API_BASE_URL to the instance's public IP/domain
+#                 BEFORE building (see DEPLOYMENT.md) -- it's baked into the
+#                 frontend image at build time, not read at runtime.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
