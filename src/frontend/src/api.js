@@ -1,7 +1,3 @@
-// Base URL of the NADTFE FastAPI backend. Overridable at build/dev time via
-// a .env file (VITE_API_BASE_URL=...) -- see .env.example -- so the same
-// build can point at localhost during development and at a deployed URL
-// later without code changes.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
 async function parseErrorDetail(response) {

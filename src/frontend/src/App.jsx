@@ -31,6 +31,11 @@ function toPayload(values) {
   }
   return payload;
 }
+function makeId() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
 
 export default function App() {
   const [values, setValues] = useState(() => toFormValues(EXAMPLE_NORMAL));
@@ -68,7 +73,7 @@ export default function App() {
       setResult(prediction);
       setHistory((prev) => [
         {
-          id: crypto.randomUUID(),
+          id: makeId(),
           time: new Date().toLocaleTimeString(),
           service: payload.service,
           flag: payload.flag,
