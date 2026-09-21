@@ -20,7 +20,9 @@ data/
 *.zip
 
 # Model artifacts / notebook / log output
-models/
+models/*
+!models/rf_baseline.joblib
+!models/onehot_encoder.joblib
 outputs/
 logs/
 *.log
