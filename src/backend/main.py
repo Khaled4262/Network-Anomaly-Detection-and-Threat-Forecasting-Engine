@@ -62,7 +62,7 @@ app = FastAPI(
 # port) can call this freely. Tighten allow_origins before any real deploy.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://16.52.234.137"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
