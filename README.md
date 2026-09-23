@@ -109,63 +109,16 @@ See `.github/workflows/` for pipeline configuration.
 
 ## Model
 
-**Algorithm**: RandomForestClassifier (100 estimators)
-
-**Features**: 41 NSL-KDD network connection attributes
-- Basic: protocol, service, connection flags, byte counts
-- Content: login attempts, shell access, file operations
-- Traffic: connection counts, error rates
-- Host-based: destination host statistics
+**Algorithm**: RandomForestClassifier 
 
 **Performance**: Evaluated on NSL-KDD test set with precision, recall, F1, and confusion matrix.
 
 **Encoding**: One-hot encoding for categorical features (protocol_type, service, flag) with `handle_unknown="ignore"` for unseen values at inference.
 
-## API
-
-### POST `/predict`
-
-Score a single network connection record.
-
-**Request**:
-```json
-{
-  "duration": 0,
-  "protocol_type": "tcp",
-  "service": "http",
-  "flag": "SF",
-  "src_bytes": 215,
-  "dst_bytes": 45076,
-  ...
-}
-```
-
-**Response**:
-```json
-{
-  "classification": "normal",
-  "label": 0,
-  "risk_score": 0.08
-}
-```
-
-### GET `/health`
-
-Readiness check for container orchestration.
-
-**Response**:
-```json
-{
-  "status": "ok",
-  "model_loaded": true
-}
-```
-
 ## Dataset
 
 **NSL-KDD**: Refined version of KDD Cup 1999 dataset. 125,973 training records, 22,544 test records. Labels: normal or attack type (DoS, Probe, R2L, U2R).
 
-Note: Reflects 1999 traffic patterns. Suitable for pipeline validation; consider CICIDS2017 or UNSW-NB15 for modern benchmarks.
 
 ## Tech Stack
 
