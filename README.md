@@ -130,28 +130,6 @@ See `.github/workflows/` for pipeline configuration.
 | DevOps | Docker, Docker Compose, GitHub Actions |
 | Cloud | AWS EC2, ECR, security groups |
 
-## Development
-
-Install dev dependencies:
-
-```bash
-pip install pytest black flake8
-```
-
-Run tests:
-
-```bash
-pytest
-```
-
-Format and lint:
-
-```bash
-black src/
-flake8 src/
-```
-
-
 
 ## License
 
