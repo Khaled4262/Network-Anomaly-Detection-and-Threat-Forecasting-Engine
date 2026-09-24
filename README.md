@@ -1,6 +1,6 @@
 # NADTFE — Network Anomaly Detection and Threat Forecasting Engine
 
-A production-ready machine learning system for detecting network intrusions and anomalous traffic patterns. Built with scikit-learn, FastAPI, React, Docker, and deployed on AWS EC2 with automated CI/CD pipelines.
+A machine learning system for detecting network intrusions and anomalous traffic patterns. Built with scikit-learn, FastAPI, React, Docker, and deployed on AWS EC2 with automated CI/CD pipelines.
 
 ## Features
 
