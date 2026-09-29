@@ -41,7 +41,6 @@ export default function ResultPanel({ result, error, loading }) {
         </div>
         <span className="risk-meter-label">{riskPct}% predicted risk of attack</span>
       </div>
-      <p className="result-hint">Model label: {result.label} (0 = normal, 1 = attack)</p>
     </div>
   );
 }
