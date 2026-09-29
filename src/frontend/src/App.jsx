@@ -3,7 +3,7 @@ import RecordForm from "./components/RecordForm";
 import ResultPanel from "./components/ResultPanel";
 import HistoryTable from "./components/HistoryTable";
 import { ALL_FIELDS, EXAMPLE_NORMAL, EXAMPLE_ATTACK } from "./fields";
-import { classifyRecord, checkHealth, API_BASE_URL } from "./api";
+import { classifyRecord, checkHealth} from "./api";
 
 // Form inputs are controlled as strings (HTML inputs are always strings
 // under the hood); this converts a "real" record object into that shape.
@@ -15,7 +15,7 @@ function toFormValues(record) {
   return values;
 }
 
-// ...and this converts form strings back into the ints/floats/strings the
+
 // API's NetworkLogRecord schema expects.
 function toPayload(values) {
   const payload = {};
@@ -100,8 +100,8 @@ export default function App() {
         <div className={`api-status api-status--${apiStatus}`}>
           <span className="api-status-dot" />
           {apiStatus === "checking" && "Checking API..."}
-          {apiStatus === "ok" && `API connected (${API_BASE_URL})`}
-          {apiStatus === "not_ready" && "API up, model not loaded"}
+          {apiStatus === "ok" && "API connected"}
+          {apiStatus === "not_ready" && "API unconnected"}
           {apiStatus === "down" && `API unreachable (${API_BASE_URL})`}
         </div>
       </header>
